@@ -19,7 +19,12 @@ A powerful library for a simple and easy to use API when communicating with One 
 
 And thats all you need to get started with measuring temperatures with a DS18B20 from .NET and C# on Raspberry Pi.
 
-Build in One Wire Device Support
+I2C Address
+-----------
+
+DS2482-100 supports up to 4 devices on the same bus, the bus control flags are exposed via OneWireDeviceHandler ctor. True/False is the same as high/low on the AD0 and AD1 pins on the device.
+
+Built in One Wire Device Support
 --------------
 ##Today:
 1. DS18B20
