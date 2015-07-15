@@ -22,9 +22,6 @@ namespace Rinsen.IoT.OneWire
             }
         }
 
-        //private const byte DS2482_100 = 0x18;
-        private const byte DS2482_100_ADDRESS = 0x1B;
-
         /// <summary>
         /// One wire device handler via DS2482-100
         /// </summary>
@@ -32,7 +29,7 @@ namespace Rinsen.IoT.OneWire
         /// <param name="ad1">AD1 addess bit</param>
         public OneWireDeviceHandler(bool ad0 = true, bool ad1 = true)
         {
-            var address = 0x18;
+            byte address = 0x18;
             if (ad0)
             {
                 address |= 1 << 0;
@@ -42,7 +39,7 @@ namespace Rinsen.IoT.OneWire
                 address |= 1 << 1;
             }
 
-            _ds2482_100 = new DS2482_100(new I2cDeviceLocator().GetI2cDevice(DS2482_100_ADDRESS).Result);
+            _ds2482_100 = new DS2482_100(new I2cDeviceLocator().GetI2cDevice(address).Result);
             _oneWireDeviceTypes = new Dictionary<byte, Type>();
 
             AddDeviceType<DS18S20>(0x10);
