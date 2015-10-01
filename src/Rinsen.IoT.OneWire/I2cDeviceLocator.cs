@@ -5,10 +5,10 @@ using Windows.Devices.I2c;
 
 namespace Rinsen.IoT.OneWire
 {
-    internal class I2cDeviceLocator
+    class I2cDeviceLocator
     {
-        //private const string I2C_CONTROLLER_NAME = "I2C5";        // For Minnowboard Max, use I2C5
-        private const string I2C_CONTROLLER_NAME = "I2C1";        // For Raspberry Pi 2, use I2C1
+        //const string I2C_CONTROLLER_NAME = "I2C5";        // For Minnowboard Max, use I2C5
+        const string I2C_CONTROLLER_NAME = "I2C1";        // For Raspberry Pi 2, use I2C1
 
         public async Task<I2cDevice> GetI2cDevice(byte address)
         {

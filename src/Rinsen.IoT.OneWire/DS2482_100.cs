@@ -13,7 +13,7 @@ namespace Rinsen.IoT.OneWire
 
     public class DS2482_100 : IDisposable
     {
-        private readonly I2cDevice _i2cDevice;
+        readonly I2cDevice _i2cDevice;
 
         // Enable leaky abstraction
         // public I2cDevice I2CDevice { get { return _i2cDevice; } }
@@ -323,7 +323,7 @@ namespace Rinsen.IoT.OneWire
             return statusBuffer[0];
         }
 
-        private void WaitForOneWireReady()
+        void WaitForOneWireReady()
         {
             var status = new byte[1];
             var stopWatch = new Stopwatch();

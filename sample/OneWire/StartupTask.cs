@@ -9,7 +9,7 @@ namespace OneWire
 {
     public sealed class StartupTask : IBackgroundTask
     {
-        private ThreadPoolTimer _timer;
+        ThreadPoolTimer _timer;
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -24,7 +24,7 @@ namespace OneWire
             _timer = ThreadPoolTimer.CreatePeriodicTimer(LogTemperatures, TimeSpan.FromMinutes(5));
         }
 
-        private void LogTemperatures(ThreadPoolTimer timer)
+        void LogTemperatures(ThreadPoolTimer timer)
         {
             try
             {

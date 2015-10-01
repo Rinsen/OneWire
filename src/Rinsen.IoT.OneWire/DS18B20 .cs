@@ -92,14 +92,14 @@ namespace Rinsen.IoT.OneWire
             return scratchpad;
         }
 
-        private void StartTemperatureConversion()
+        void StartTemperatureConversion()
         {
             DS2482_100.OneWireWriteByte(FunctionCommand.CONVERT_T);
 
             Task.Delay(TimeSpan.FromSeconds(1)).Wait();
         }
 
-        private byte[] ReadScratchpad()
+        byte[] ReadScratchpad()
         {
             DS2482_100.OneWireWriteByte(FunctionCommand.READ_SCRATCHPAD);
 
@@ -113,7 +113,7 @@ namespace Rinsen.IoT.OneWire
             return scratchpadData;
         }
 
-        private void ResetOneWireAndMatchDeviceRomAddress()
+        void ResetOneWireAndMatchDeviceRomAddress()
         {
             DS2482_100.OneWireReset();
 
@@ -125,7 +125,7 @@ namespace Rinsen.IoT.OneWire
             }
         }
 
-        private class Scratchpad
+        class Scratchpad
         {
             public const int TemperatureLSB = 0;
 

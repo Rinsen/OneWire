@@ -115,6 +115,7 @@
   <ItemGroup>
     <Compile Include="DS18B20 .cs" />
     <Compile Include="DS18S20.cs" />
+    <Compile Include="DS2482100DeviceNotFoundException.cs" />
     <Compile Include="DS2482_100.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="I2cDeviceLocator.cs" />

@@ -37,8 +37,8 @@
             return temp_read;
         }
 
-        
-        private class Scratchpad
+
+        class Scratchpad
         {
             public const int TemperatureLSB = 0;
 
