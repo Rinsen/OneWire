@@ -24,6 +24,8 @@ I2C Address
 
 DS2482-100 supports up to 4 devices on the same bus, the bus control flags are exposed via OneWireDeviceHandler ctor. True/False is the same as high/low on the AD0 and AD1 pins on the device.
 
+If the address is wrong or the device is connected in a bad way there will be a DS2482100DeviceNotFoundException thrown that will indicate that there is no connection to the DS2482-100 device but it does not know if it is related to addressing problems or physical connection.
+
 Built in One Wire Device Support
 --------------
 ##Today:
