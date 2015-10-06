@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Rinsen.IoT.OneWire.nuspec = Rinsen.IoT.OneWire.nuspec
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rinsen.IoT.OneWire.Tests", "Rinsen.IoT.OneWire.Tests\Rinsen.IoT.OneWire.Tests.csproj", "{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,26 @@ Global
 		{48B789B0-E612-4E01-9C4C-3E46F34D8F7D}.Release|x86.ActiveCfg = Release|x86
 		{48B789B0-E612-4E01-9C4C-3E46F34D8F7D}.Release|x86.Build.0 = Release|x86
 		{48B789B0-E612-4E01-9C4C-3E46F34D8F7D}.Release|x86.Deploy.0 = Release|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|ARM.ActiveCfg = Debug|ARM
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|ARM.Build.0 = Debug|ARM
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|ARM.Deploy.0 = Debug|ARM
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|x64.ActiveCfg = Debug|x64
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|x64.Build.0 = Debug|x64
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|x64.Deploy.0 = Debug|x64
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|x86.ActiveCfg = Debug|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|x86.Build.0 = Debug|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Debug|x86.Deploy.0 = Debug|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|Any CPU.ActiveCfg = Release|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|ARM.ActiveCfg = Release|ARM
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|ARM.Build.0 = Release|ARM
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|ARM.Deploy.0 = Release|ARM
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|x64.ActiveCfg = Release|x64
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|x64.Build.0 = Release|x64
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|x64.Deploy.0 = Release|x64
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|x86.ActiveCfg = Release|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|x86.Build.0 = Release|x86
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +95,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E9E3A437-B521-4F5B-A90F-F8698C028231} = {3D02A30C-7A65-4CC2-9FE5-68CD6F931569}
 		{48B789B0-E612-4E01-9C4C-3E46F34D8F7D} = {9FFD6943-10E1-4D97-9FB2-5298086EE9CA}
+		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F} = {E6DBB469-508C-4267-9054-0D1320A7CCAC}
 	EndGlobalSection
 EndGlobal
