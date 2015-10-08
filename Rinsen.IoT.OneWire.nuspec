@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Rinsen.OneWire</id>
-    <version>0.1.3</version>
+    <version>0.1.4</version>
     <title>Rinsen One Wire</title>
     <authors>Fredrik Rinsén</authors>
     <owners>Fredrik Rinsén</owners>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>One Wire library for Windows IoT on Raspberry Pi via DS2482-100 I2C to One Wire bridge</description>
     <releaseNotes>
-      * Detect and throw specific exception when no DS2482-100 device is detected.
+      * DS18B20 now supports negative temperatures in a correct way.
     </releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>OneWire Raspberry IoT</tags>

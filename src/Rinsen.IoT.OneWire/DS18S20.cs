@@ -1,4 +1,6 @@
-﻿namespace Rinsen.IoT.OneWire
+﻿using System.Runtime.CompilerServices;
+
+namespace Rinsen.IoT.OneWire
 {
     public class DS18S20 : DS18B20
     {
@@ -6,16 +8,16 @@
         public double GetExtendedTemperature()
         {
             byte[] scratchpad = GetTemperatureScratchpad();
-            var temp_read = GetTemp_Read(scratchpad);
+            var temp_read = GetTemp_Read(scratchpad[Scratchpad.TemperatureMSB], scratchpad[Scratchpad.TemperatureLSB]);
 
             return temp_read - 0.25 + ((scratchpad[Scratchpad.CountPerC] - scratchpad[Scratchpad.CountRemain]) / scratchpad[Scratchpad.CountPerC]);
         }
 
-        protected override double GetTemp_Read(byte[] scratchpad)
+        internal override double GetTemp_Read(byte msb, byte lsb)
         {
             double temp_read;
-            var rawTemperature = scratchpad[Scratchpad.TemperatureLSB];
-            var negativeSign = scratchpad[Scratchpad.TemperatureMSB] > 0;
+            var rawTemperature = lsb;//scratchpad[Scratchpad.TemperatureLSB];
+            var negativeSign = msb > 0;// scratchpad[Scratchpad.TemperatureMSB] > 0;
             var decimalPart = rawTemperature.GetBit(0);
             var temperature = (int)rawTemperature;
             temperature &= ~(1 << 0);

@@ -19,60 +19,72 @@ namespace Rinsen.IoT.OneWire
         {
             byte[] scratchpad = GetTemperatureScratchpad();
 
-            return GetTemp_Read(scratchpad);
+            return GetTemp_Read(scratchpad[Scratchpad.TemperatureMSB], scratchpad[Scratchpad.TemperatureLSB]);
         }
         
-        protected virtual double GetTemp_Read(byte[] scratchpad)
+        internal virtual double GetTemp_Read(byte msb, byte lsb)
         {
             double temp_read = 0;
-            var tempLSB = scratchpad[Scratchpad.TemperatureLSB];
-            var tempMSB = scratchpad[Scratchpad.TemperatureMSB];
-            if (tempLSB.GetBit(0))
+            var negative = false;
+
+            if (msb > 0xF8)
+            {
+                negative = true;
+                msb = (byte)~msb;
+                lsb = (byte)~lsb;
+                var addOne = (ushort)lsb;
+                addOne |= (ushort)(msb << 8);
+                addOne++;
+                lsb = (byte)(addOne & 0xFFu);
+                msb = (byte)((addOne >> 8) & 0xFFu);
+            }
+            
+            if (lsb.GetBit(0))
             {
                 temp_read += Math.Pow(2, -4);
             }
-            if (tempLSB.GetBit(1))
+            if (lsb.GetBit(1))
             {
                 temp_read += Math.Pow(2, -3);
             }
-            if (tempLSB.GetBit(2))
+            if (lsb.GetBit(2))
             {
                 temp_read += Math.Pow(2, -2);
             }
-            if (tempLSB.GetBit(3))
+            if (lsb.GetBit(3))
             {
                 temp_read += Math.Pow(2, -1);
             }
-            if (tempLSB.GetBit(4))
+            if (lsb.GetBit(4))
             {
                 temp_read += Math.Pow(2, 0);
             }
-            if (tempLSB.GetBit(5))
+            if (lsb.GetBit(5))
             {
                 temp_read += Math.Pow(2, 1);
             }
-            if (tempLSB.GetBit(6))
+            if (lsb.GetBit(6))
             {
                 temp_read += Math.Pow(2, 2);
             }
-            if (tempLSB.GetBit(7))
+            if (lsb.GetBit(7))
             {
                 temp_read += Math.Pow(2, 3);
             }
-            if (tempMSB.GetBit(0))
+            if (msb.GetBit(0))
             {
                 temp_read += Math.Pow(2, 4);
             }
-            if (tempMSB.GetBit(1))
+            if (msb.GetBit(1))
             {
                 temp_read += Math.Pow(2, 5);
             }
-            if (tempMSB.GetBit(2))
+            if (msb.GetBit(2))
             {
                 temp_read += Math.Pow(2, 6);
             }
 
-            if (tempMSB.GetBit(3))
+            if (negative)
             {
                 temp_read = temp_read * -1;
             }
