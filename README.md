@@ -19,7 +19,7 @@ A powerful library for a simple and easy to use API when communicating with One 
 
 And thats all you need to get started with measuring temperatures with a DS18B20 from .NET and C# on Raspberry Pi.
 
-I2C Address
+Headed apps
 -----------
 Headed apps do not currently support disposing the OneWireDeviceHandler. The instance MUST be reused between measurements.
 
