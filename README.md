@@ -21,6 +21,10 @@ And thats all you need to get started with measuring temperatures with a DS18B20
 
 I2C Address
 -----------
+Headed apps do not currently support disposing the OneWireDeviceHandler. The instance MUST be reused between measurements.
+
+I2C Address
+-----------
 
 DS2482-100 supports up to 4 devices on the same bus, the bus control flags are exposed via OneWireDeviceHandler ctor. True/False is the same as high/low on the AD0 and AD1 pins on the device.
 
