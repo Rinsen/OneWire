@@ -2,6 +2,7 @@
 using Windows.ApplicationModel.Background;
 using Windows.System.Threading;
 using Rinsen.IoT.OneWire;
+using System.Diagnostics;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
 
@@ -10,12 +11,16 @@ namespace OneWire
     public sealed class StartupTask : IBackgroundTask
     {
         ThreadPoolTimer _timer;
+        BackgroundTaskDeferral deferral;
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
             // 
             // TODO: Insert code to start one or more asynchronous methods 
             //
+
+            // Keep this task running after this method has returned
+            deferral = taskInstance.GetDeferral();
 
             // Initial log
             LogTemperatures(null);
@@ -41,6 +46,7 @@ namespace OneWire
                     foreach (var device in oneWireDeviceHandler.OneWireDevices.GetDevices<DS18B20>())
                     {
                         var result = device.GetTemperature();
+                        Debug.WriteLine(result);
 
                         // Insert code to log result in some way
                     }

@@ -6,7 +6,7 @@ using Windows.Devices.I2c;
 namespace Rinsen.IoT.OneWire
 {
     //
-    // This implementation is based on Maxim sample implementation and has parts from converted C code
+    // This implementation is based on Maxim sample implementation and has parts from ported C code
     // source: http://www.maximintegrated.com/en/app-notes/index.mvp/id/187
     //
     //
@@ -457,7 +457,17 @@ namespace Rinsen.IoT.OneWire
 
         public void Dispose()
         {
-            _i2cDevice.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_i2cDevice != null)
+                    _i2cDevice.Dispose();
+            }
         }
 
         public class FunctionCommand

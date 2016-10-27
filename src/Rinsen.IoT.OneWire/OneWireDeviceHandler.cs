@@ -40,7 +40,7 @@ namespace Rinsen.IoT.OneWire
                 address |= 1 << 1;
             }
             
-            _ds2482_100 = new DS2482_100(new I2cDeviceLocator().GetI2cDevice(address).Result);
+            _ds2482_100 = new DS2482_100(new I2cDeviceLocator().GetI2cDevice(address));
 
             try
             {
@@ -116,7 +116,17 @@ namespace Rinsen.IoT.OneWire
 
         public void Dispose()
         {
-            _ds2482_100.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_ds2482_100 != null)
+                    _ds2482_100.Dispose();
+            }
         }
     }
 }
