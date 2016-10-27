@@ -127,7 +127,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Rinsen.IoT.OneWire\Rinsen.IoT.OneWire.csproj">
+    <ProjectReference Include="..\..\src\Rinsen.IoT.OneWire\Rinsen.IoT.OneWire.csproj">
       <Project>{e9e3a437-b521-4f5b-a90f-f8698c028231}</Project>
       <Name>Rinsen.IoT.OneWire</Name>
     </ProjectReference>
