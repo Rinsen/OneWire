@@ -11,7 +11,7 @@ namespace OneWire
     public sealed class StartupTask : IBackgroundTask
     {
         ThreadPoolTimer _timer;
-        BackgroundTaskDeferral deferral;
+        BackgroundTaskDeferral _deferral;
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -20,7 +20,7 @@ namespace OneWire
             //
 
             // Keep this task running after this method has returned
-            deferral = taskInstance.GetDeferral();
+            _deferral = taskInstance.GetDeferral();
 
             // Initial log
             LogTemperatures(null);
