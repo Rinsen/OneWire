@@ -81,6 +81,7 @@ namespace Rinsen.IoT.OneWire
             public const byte DEVICE_RESET = 0xF0;
             public const byte SET_READ_POINTER = 0xE1;
             public const byte WRITE_CONFIGURATION = 0xD2;
+            public const byte CHANNEL_SELECT = 0xC3;
             public const byte ONEWIRE_RESET = 0xB4;
             public const byte ONEWIRE_SINGLE_BIT = 0x87;
             public const byte ONEWIRE_WRITE_BYTE = 0xA5;
@@ -92,6 +93,7 @@ namespace Rinsen.IoT.OneWire
         {
             public const byte STATUS = 0xF0;
             public const byte READ_DATA = 0xE1;
+            public const byte CHANNEL_SELECTION = 0xD2;
             public const byte CONFIGURATION = 0xC3;
         }
 
@@ -137,5 +139,28 @@ namespace Rinsen.IoT.OneWire
             public const byte ZERO = 0x00;
         }
 
+        public class ChannelSelect
+        {
+            public const byte Channel_IO0 = 0xF0;
+            public const byte Channel_IO1 = 0xE1;
+            public const byte Channel_IO2 = 0xD2;
+            public const byte Channel_IO3 = 0xC3;
+            public const byte Channel_IO4 = 0xB4;
+            public const byte Channel_IO5 = 0xA5;
+            public const byte Channel_IO6 = 0x96;
+            public const byte Channel_IO7 = 0x87;
+        }
+
+        public enum SelectedChannel : byte
+        {
+            Channel_IO0 = 0xF0,
+            Channel_IO1 = 0xE1,
+            Channel_IO2 = 0xD2,
+            Channel_IO3 = 0xC3,
+            Channel_IO4 = 0xB4,
+            Channel_IO5 = 0xA5,
+            Channel_IO6 = 0x96,
+            Channel_IO7 = 0x87
+        }
     }
 }
