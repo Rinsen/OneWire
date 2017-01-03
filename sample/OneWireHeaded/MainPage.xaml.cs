@@ -35,7 +35,7 @@ namespace OneWireHeaded
         {
             try
             {
-                foreach (var device in _oneWireDeviceHandler.OneWireDevices.GetDevices<DS18B20>())
+                foreach (var device in _oneWireDeviceHandler.GetDevices<DS18B20>())
                 {
                     var result = device.GetTemperature();
                     this.textBox.Text = result.ToString();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.I2c;
@@ -9,29 +10,65 @@ namespace Rinsen.IoT.OneWire
     // This implementation is based on Maxim sample implementation and has parts from ported C code
     // source: http://www.maximintegrated.com/en/app-notes/index.mvp/id/187
     //
-    //
 
-    public class DS2482_100 : IDisposable
+    public class DS2482_100 : DS2482
     {
-        readonly I2cDevice _i2cDevice;
-
-        // Enable leaky abstraction
-        // public I2cDevice I2CDevice { get { return _i2cDevice; } }
-
         public DS2482_100(I2cDevice i2cDevice)
+            :base(i2cDevice)
         {
-            _i2cDevice = i2cDevice;
             ROM_NO = new byte[8];
         }
 
+        public override List<IOneWireDevice> GetConnectedOneWireDevices(Dictionary<byte, Type> oneWireDeviceTypes)
+        {
+            var oneWireDevices = new List<IOneWireDevice>();
+            var first = true;
+            var deviceDetected = OneWireReset();
 
-        // global search state
-        public byte[] ROM_NO { get; set; }
-        int LastDiscrepancy;
-        int LastFamilyDiscrepancy;
-        bool LastDeviceFlag;
-        byte crc8;
+            if (deviceDetected)
+            {
+                var result = true;
+                do
+                {
+                    if (first)
+                    {
+                        first = false;
+                        result = OneWireFirst();
+                    }
+                    else
+                    {
+                        result = OnoWireNext();
+                    }
 
+                    if (result)
+                    {
+                        oneWireDevices.Add(AddOneWireDevice(oneWireDeviceTypes));
+                    }
+
+                } while (result);
+            }
+
+            return oneWireDevices;
+        }
+
+        private IOneWireDevice AddOneWireDevice(Dictionary<byte, Type> oneWireDeviceTypes)
+        {
+            if (oneWireDeviceTypes.Any(k => k.Key == ROM_NO[0]))
+            {
+                var device = (IOneWireDevice)Activator.CreateInstance(oneWireDeviceTypes.First(k => k.Key == ROM_NO[0]).Value);
+                device.Initialize(this, new byte[ROM_NO.Length]);
+
+                Array.Copy(ROM_NO, device.OneWireAddress, ROM_NO.Length);
+                return device;
+            }
+            else
+            {
+                return new UndefinedOneWireDevice(this, ROM_NO);
+            }
+        }
+
+        
+        
         /// <summary>
         /// Find the 'first' devices on the 1-Wire bus
         /// </summary>
@@ -39,9 +76,9 @@ namespace Rinsen.IoT.OneWire
         public bool OneWireFirst()
         {
             // reset the search state
-            LastDiscrepancy = 0;
-            LastDeviceFlag = false;
-            LastFamilyDiscrepancy = 0;
+            _lastDiscrepancy = 0;
+            _lastDeviceFlag = false;
+            _lastFamilyDiscrepancy = 0;
 
             return OneWireSearch();
         }
@@ -73,18 +110,18 @@ namespace Rinsen.IoT.OneWire
             rom_byte_number = 0;
             rom_byte_mask = 1;
             search_result = false;
-            crc8 = 0;
+            _crc8 = 0;
 
             // if the last call was not the last one
-            if (!LastDeviceFlag)
+            if (!_lastDeviceFlag)
             {
                 // 1-Wire reset
                 if (!OneWireReset())
                 {
                     // reset the search
-                    LastDiscrepancy = 0;
-                    LastDeviceFlag = false;
-                    LastFamilyDiscrepancy = 0;
+                    _lastDiscrepancy = 0;
+                    _lastDeviceFlag = false;
+                    _lastFamilyDiscrepancy = 0;
                     return false;
                 }
 
@@ -110,11 +147,11 @@ namespace Rinsen.IoT.OneWire
                         {
                             // if this discrepancy if before the Last Discrepancy
                             // on a previous next then pick the same as last time
-                            if (id_bit_number < LastDiscrepancy)
+                            if (id_bit_number < _lastDiscrepancy)
                                 search_direction = ((ROM_NO[rom_byte_number] & rom_byte_mask) > 0);
                             else
                                 // if equal to last pick 1, if not then pick 0
-                                search_direction = (id_bit_number == LastDiscrepancy);
+                                search_direction = (id_bit_number == _lastDiscrepancy);
 
                             // if 0 was picked then record its position in LastZero
                             if (!search_direction)
@@ -123,7 +160,7 @@ namespace Rinsen.IoT.OneWire
 
                                 // check for Last discrepancy in family
                                 if (last_zero < 9)
-                                    LastFamilyDiscrepancy = last_zero;
+                                    _lastFamilyDiscrepancy = last_zero;
                             }
                         }
 
@@ -158,14 +195,14 @@ namespace Rinsen.IoT.OneWire
                 while (rom_byte_number < 8);  // loop until through all ROM bytes 0-7
 
                 // if the search was successful then
-                if (!((id_bit_number < 65) || (crc8 != 0)))
+                if (!((id_bit_number < 65) || (_crc8 != 0)))
                 {
                     // search successful so set LastDiscrepancy,LastDeviceFlag,search_result
-                    LastDiscrepancy = last_zero;
+                    _lastDiscrepancy = last_zero;
 
                     // check for last device
-                    if (LastDiscrepancy == 0)
-                        LastDeviceFlag = true;
+                    if (_lastDiscrepancy == 0)
+                        _lastDeviceFlag = true;
 
                     search_result = true;
                 }
@@ -174,9 +211,9 @@ namespace Rinsen.IoT.OneWire
             // if no device found then reset counters so next 'search' will be like a first
             if (!search_result || ROM_NO[0] == 0)
             {
-                LastDiscrepancy = 0;
-                LastDeviceFlag = false;
-                LastFamilyDiscrepancy = 0;
+                _lastDiscrepancy = 0;
+                _lastDeviceFlag = false;
+                _lastFamilyDiscrepancy = 0;
                 search_result = false;
             }
 
@@ -196,13 +233,13 @@ namespace Rinsen.IoT.OneWire
             // keep a backup copy of the current state
             for (i = 0; i < 8; i++)
                 rom_backup[i] = ROM_NO[i];
-            ld_backup = LastDiscrepancy;
-            ldf_backup = LastDeviceFlag;
-            lfd_backup = LastFamilyDiscrepancy;
+            ld_backup = _lastDiscrepancy;
+            ldf_backup = _lastDeviceFlag;
+            lfd_backup = _lastFamilyDiscrepancy;
 
             // set search to find the same device
-            LastDiscrepancy = 64;
-            LastDeviceFlag = false;
+            _lastDiscrepancy = 64;
+            _lastDeviceFlag = false;
 
             if (OneWireSearch())
             {
@@ -223,9 +260,9 @@ namespace Rinsen.IoT.OneWire
             // restore the search state 
             for (i = 0; i < 8; i++)
                 ROM_NO[i] = rom_backup[i];
-            LastDiscrepancy = ld_backup;
-            LastDeviceFlag = ldf_backup;
-            LastFamilyDiscrepancy = lfd_backup;
+            _lastDiscrepancy = ld_backup;
+            _lastDeviceFlag = ldf_backup;
+            _lastFamilyDiscrepancy = lfd_backup;
 
             // return the result of the verify
             return rslt;
@@ -243,9 +280,9 @@ namespace Rinsen.IoT.OneWire
             ROM_NO[0] = family_code;
             for (i = 1; i < 8; i++)
                 ROM_NO[i] = 0;
-            LastDiscrepancy = 64;
-            LastFamilyDiscrepancy = 0;
-            LastDeviceFlag = false;
+            _lastDiscrepancy = 64;
+            _lastFamilyDiscrepancy = 0;
+            _lastDeviceFlag = false;
         }
 
         /// <summary>
@@ -254,12 +291,12 @@ namespace Rinsen.IoT.OneWire
         public void OneWireFamilySkipSetup()
         {
             // set the Last discrepancy to last family discrepancy
-            LastDiscrepancy = LastFamilyDiscrepancy;
-            LastFamilyDiscrepancy = 0;
+            _lastDiscrepancy = _lastFamilyDiscrepancy;
+            _lastFamilyDiscrepancy = 0;
 
             // check for end of list
-            if (LastDiscrepancy == 0)
-                LastDeviceFlag = true;
+            if (_lastDiscrepancy == 0)
+                _lastDeviceFlag = true;
         }
 
         //--------------------------------------------------------------------------
@@ -270,7 +307,7 @@ namespace Rinsen.IoT.OneWire
         /// Reset the 1-Wire bus and return the presence of any device
         /// </summary>
         /// <returns>true : device present, false : no device present</returns>
-        public bool OneWireReset()
+        public override bool OneWireReset()
         {
             // platform specific
             // TMEX API TEST BUILD
@@ -341,7 +378,7 @@ namespace Rinsen.IoT.OneWire
         /// Send 8 bits of data to the 1-Wire bus
         /// </summary>
         /// <param name="byte_value">byte to send</param>
-        public void OneWireWriteByte(byte byte_value)
+        public override void OneWireWriteByte(byte byte_value)
         {
             // platform specific
 
@@ -357,7 +394,7 @@ namespace Rinsen.IoT.OneWire
         /// Send 1 bit of data to teh 1-Wire bus 
         /// </summary>
         /// <param name="bit_value"></param>
-        public void OneWireWriteBit(bool bit_value)
+        public override void OneWireWriteBit(bool bit_value)
         {
             // platform specific
 
@@ -380,7 +417,7 @@ namespace Rinsen.IoT.OneWire
         /// Read 1 bit of data from the 1-Wire bus 
         /// </summary>
         /// <returns>true : bit read is 1, false : bit read is 0</returns>
-        public bool OneWireReadBit()
+        public override bool OneWireReadBit()
         {
             // platform specific
 
@@ -402,16 +439,16 @@ namespace Rinsen.IoT.OneWire
         /// Read 1 bit of data from the 1-Wire bus 
         /// </summary>
         /// <returns>true : bit read is 1, false : bit read is 0</returns>
-        public byte OneWireReadByte()
+        public override byte OneWireReadByte()
         {
             var buffer = new byte[1];
-            _i2cDevice.Write(new byte[] { DS2482_100.FunctionCommand.ONEWIRE_READ_BYTE });
+            _i2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_READ_BYTE });
             ReadStatus();
-            _i2cDevice.WriteRead(new byte[] { DS2482_100.FunctionCommand.SET_READ_POINTER, DS2482_100.RegisterSelection.READ_DATA }, buffer);
+            _i2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.READ_DATA }, buffer);
             return buffer[0];
         }
 
-        public void EnableStrongPullup()
+        public override void EnableStrongPullup()
         {
             var configuration = new byte();
             configuration |= 1 << 2;
@@ -419,116 +456,8 @@ namespace Rinsen.IoT.OneWire
             configuration |= 1 << 5;
             configuration |= 1 << 4;
 
-            _i2cDevice.Write(new byte[] { DS2482_100.FunctionCommand.WRITE_CONFIGURATION, configuration });
+            _i2cDevice.Write(new byte[] { FunctionCommand.WRITE_CONFIGURATION, configuration });
         }
-
-        // TEST BUILD
-        static byte[] dscrc_table = (new [] {
-        0, 94,188,226, 97, 63,221,131,194,156,126, 32,163,253, 31, 65,
-      157,195, 33,127,252,162, 64, 30, 95,  1,227,189, 62, 96,130,220,
-       35,125,159,193, 66, 28,254,160,225,191, 93,  3,128,222, 60, 98,
-      190,224,  2, 92,223,129, 99, 61,124, 34,192,158, 29, 67,161,255,
-       70, 24,250,164, 39,121,155,197,132,218, 56,102,229,187, 89,  7,
-      219,133,103, 57,186,228,  6, 88, 25, 71,165,251,120, 38,196,154,
-      101, 59,217,135,  4, 90,184,230,167,249, 27, 69,198,152,122, 36,
-      248,166, 68, 26,153,199, 37,123, 58,100,134,216, 91,  5,231,185,
-      140,210, 48,110,237,179, 81, 15, 78, 16,242,172, 47,113,147,205,
-       17, 79,173,243,112, 46,204,146,211,141,111, 49,178,236, 14, 80,
-      175,241, 19, 77,206,144,114, 44,109, 51,209,143, 12, 82,176,238,
-       50,108,142,208, 83, 13,239,177,240,174, 76, 18,145,207, 45,115,
-      202,148,118, 40,171,245, 23, 73,  8, 86,180,234,105, 55,213,139,
-       87,  9,235,181, 54,104,138,212,149,203, 41,119,244,170, 72, 22,
-      233,183, 85, 11,136,214, 52,106, 43,117,151,201, 74, 20,246,168,
-      116, 42,200,150, 21, 75,169,247,182,232, 10, 84,215,137,107, 53}).Select(x => (byte)x).ToArray();
-
-        //--------------------------------------------------------------------------
-        // Calculate the CRC8 of the byte value provided with the current 
-        // global 'crc8' value. 
-        // Returns current global crc8 value
-        //
-        byte docrc8(byte value)
-        {
-            // See Application Note 27
-
-            // TEST BUILD
-            crc8 = dscrc_table[crc8 ^ value];
-            return crc8;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_i2cDevice != null)
-                    _i2cDevice.Dispose();
-            }
-        }
-
-        public class FunctionCommand
-        {
-            public const byte DEVICE_RESET = 0xF0;
-            public const byte SET_READ_POINTER = 0xE1;
-            public const byte WRITE_CONFIGURATION = 0xD2;
-            public const byte ONEWIRE_RESET = 0xB4;
-            public const byte ONEWIRE_SINGLE_BIT = 0x87;
-            public const byte ONEWIRE_WRITE_BYTE = 0xA5;
-            public const byte ONEWIRE_READ_BYTE = 0x96;
-            public const byte ONEWIRE_TRIPLET = 0x78;
-        }
-
-        public class RegisterSelection
-        {
-            public const byte STATUS = 0xF0;
-            public const byte READ_DATA = 0xE1;
-            public const byte CONFIGURATION = 0xC3;
-        }
-
-        public class StatusBit
-        {
-            /// <summary>
-            /// Branch Direction Taken (DIR)
-            /// </summary>
-            public const int BranchDirectionTaken = 7;
-            /// <summary>
-            /// Triplet Second Bit (TSB)
-            /// </summary>
-            public const int TripletSecondBit = 6;
-            /// <summary>
-            /// Single Bit Result (SBR)
-            /// </summary>
-            public const int SingleBitResult = 5;
-            /// <summary>
-            /// Device Reset (RST)
-            /// </summary>
-            public const int DeviceReset = 4;
-            /// <summary>
-            /// Logic Level (LL)
-            /// </summary>
-            public const int LogicLevel = 3;
-            /// <summary>
-            /// Short Detected (SD)
-            /// </summary>
-            public const int ShortDetected = 2;
-            /// <summary>
-            /// Presence-Pulse Detect (PPD)
-            /// </summary>
-            public const int PresencePulseDetected = 1;
-            /// <summary>
-            /// 1-Wire Busy (1WB)
-            /// </summary>
-            public const int OneWireBusy = 0;
-        }
-
-        public class TripletDirection
-        {
-            public const byte ONE = 0x40;
-            public const byte ZERO = 0x00;
-        }
+        
     }
 }

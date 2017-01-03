@@ -43,7 +43,7 @@ namespace OneWire
                         // Insert code to log result in some way
                     }
 
-                    foreach (var device in oneWireDeviceHandler.OneWireDevices.GetDevices<DS18B20>())
+                    foreach (var device in oneWireDeviceHandler.GetDevices<DS18B20>())
                     {
                         var result = device.GetTemperature();
                         Debug.WriteLine(result);
