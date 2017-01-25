@@ -82,7 +82,7 @@ namespace Rinsen.IoT.OneWire
             {
                 var i2cDevice = _i2cDeviceLocator.GetI2cDevice(candidateAddress);
 
-                var ds2482_800 = new DS2482_800(i2cDevice, DS2482.SelectedChannel.Channel_IO0);
+                var ds2482_800 = new DS2482_800(i2cDevice);
 
                 try
                 {

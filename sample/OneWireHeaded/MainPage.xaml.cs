@@ -27,7 +27,7 @@ namespace OneWireHeaded
 
         public MainPage()
         {
-            _oneWireDeviceHandler = new OneWireDeviceHandler();
+            _oneWireDeviceHandler = new OneWireDeviceHandler(true, true);
             this.InitializeComponent();
         }
 

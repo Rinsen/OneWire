@@ -33,7 +33,7 @@ namespace OneWire
         {
             try
             {
-                using (var oneWireDeviceHandler = new OneWireDeviceHandler())
+                using (var oneWireDeviceHandler = new OneWireDeviceHandler(true, true))
                 {
                     foreach (var device in oneWireDeviceHandler.GetDevices<DS18S20>())
                     {

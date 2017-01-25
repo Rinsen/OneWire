@@ -117,6 +117,7 @@
     <Compile Include="DS18B20 .cs" />
     <Compile Include="DS18S20.cs" />
     <Compile Include="DS2482.cs" />
+    <Compile Include="DS2482Channel.cs" />
     <Compile Include="DS2482DeviceNotFoundException.cs" />
     <Compile Include="DS2482_800.cs" />
     <Compile Include="DS2482_100.cs" />
