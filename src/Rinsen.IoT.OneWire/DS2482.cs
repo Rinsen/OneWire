@@ -9,14 +9,15 @@ namespace Rinsen.IoT.OneWire
     public abstract class DS2482 : IDisposable
     {
         protected IList<DS2482Channel> Channels;
-        protected readonly I2cDevice _i2cDevice;
-
+        public I2cDevice I2cDevice { get; }
         public DS2482(I2cDevice i2cDevice)
         {
-            _i2cDevice = i2cDevice;
+            I2cDevice = i2cDevice;
         }
 
-        public abstract void EnsureCorrectChannel(OneWireChannel channel);
+        public abstract bool IsCorrectChannelSelected(OneWireChannel channel);
+
+        public abstract void SetSelectedChannel(OneWireChannel channel);
 
         public List<IOneWireDevice> GetConnectedOneWireDevices(Dictionary<byte, Type> oneWireDeviceTypes)
         {
@@ -45,8 +46,8 @@ namespace Rinsen.IoT.OneWire
         {
             if (disposing)
             {
-                if (_i2cDevice != null)
-                    _i2cDevice.Dispose();
+                if (I2cDevice != null)
+                    I2cDevice.Dispose();
             }
         }
     }

@@ -43,7 +43,7 @@ namespace Rinsen.IoT.OneWire
         /// </summary>
         /// <param name="ad0">AD0 addess bit</param>
         /// <param name="ad1">AD1 addess bit</param>
-        /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482-100 device is detected</exception>
+        /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482 device is detected</exception>
         public OneWireDeviceHandler(bool ad0 = true, bool ad1 = true)
             :this(CreateConnectedDS2482_100(ad0, ad1))
         { }
@@ -54,8 +54,8 @@ namespace Rinsen.IoT.OneWire
         /// <param name="ad0">AD0 addess bit</param>
         /// <param name="ad1">AD1 addess bit</param>
         /// <param name="ad2">AD2 addess bit</param>
-        /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482-800 device is detected</exception>
-        public OneWireDeviceHandler(bool ad0 = true, bool ad1 = true, bool ad2 = true)
+        /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482 device is detected</exception>
+        public OneWireDeviceHandler(bool ad0, bool ad1, bool ad2)
             : this(CreateConnectedDS2482_800(ad0, ad1, ad2))
         { }
 

@@ -14,7 +14,8 @@ namespace Rinsen.IoT.OneWire
     //
     public class DS2482Channel
     {
-        protected readonly I2cDevice _i2cDevice;
+        private readonly DS2482 _ds2482Device;
+        private readonly OneWireChannel _channel;
 
         // global search state
         public byte[] ROM_NO { get; set; }
@@ -23,9 +24,10 @@ namespace Rinsen.IoT.OneWire
         protected bool _lastDeviceFlag;
         protected byte _crc8;
 
-        public DS2482Channel(I2cDevice i2cDevice, OneWireChannel channel)
+        public DS2482Channel(DS2482 ds2482, OneWireChannel channel)
         {
-            _i2cDevice = i2cDevice;
+            _ds2482Device = ds2482;
+            _channel = channel;
         }
 
         public List<IOneWireDevice> GetConnectedOneWireDevices(Dictionary<byte, Type> oneWireDeviceTypes)
@@ -322,7 +324,12 @@ namespace Rinsen.IoT.OneWire
             // TMEX API TEST BUILD
             //return (TMTouchReset(session_handle) == 1);
 
-            _i2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_RESET });
+            if(!_ds2482Device.IsCorrectChannelSelected(_channel));
+            {
+                SelectDS2482Channel();
+            }
+
+            _ds2482Device.I2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_RESET });
 
             var status = ReadStatus();
 
@@ -332,6 +339,75 @@ namespace Rinsen.IoT.OneWire
             }
 
             return status.GetBit(StatusBit.PresencePulseDetected);
+        }
+
+        private void SelectDS2482Channel()
+        {
+            var statusBuffer = new byte[1];
+
+            switch (_channel)
+            {
+                case OneWireChannel.Channel_IO0:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO0 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO0)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO1:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO1 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO1)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO2:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO2 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO2)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO3:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO3 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO3)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO4:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO4 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO4)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO5:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO5 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO5)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO6:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO6 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO6)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                case OneWireChannel.Channel_IO7:
+                    _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.CHANNEL_SELECT, ChannelSelect.Channel_IO7 }, statusBuffer);
+
+                    if (statusBuffer[0] != ChannelSelectVerification.Channel_IO7)
+                        throw new InvalidOperationException("Failed to set selected channel");
+
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            _ds2482Device.SetSelectedChannel(_channel);
         }
 
         /// <summary>
@@ -344,11 +420,11 @@ namespace Rinsen.IoT.OneWire
             var statusBuffer = new byte[1];
             if (setReadPointerToStatus)
             {
-                _i2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.STATUS }, statusBuffer);
+                _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.STATUS }, statusBuffer);
             }
             else
             {
-                _i2cDevice.Read(statusBuffer);
+                _ds2482Device.I2cDevice.Read(statusBuffer);
             }
 
             if (statusBuffer.Length < 1)
@@ -363,7 +439,7 @@ namespace Rinsen.IoT.OneWire
                 {
                     throw new InvalidOperationException("One Wire bus busy for too long");
                 }
-                _i2cDevice.Read(statusBuffer);
+                _ds2482Device.I2cDevice.Read(statusBuffer);
             } while (statusBuffer[0].GetBit(StatusBit.OneWireBusy));
 
             return statusBuffer[0];
@@ -379,7 +455,7 @@ namespace Rinsen.IoT.OneWire
                 {
                     throw new InvalidOperationException("One Wire bus busy for too long");
                 }
-                _i2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.STATUS }, status);
+                _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.STATUS }, status);
             } while (status[0].GetBit(StatusBit.OneWireBusy));
         }
 
@@ -394,7 +470,7 @@ namespace Rinsen.IoT.OneWire
             // TMEX API TEST BUILD
             //TMTouchByte(session_handle, byte_value);
 
-            _i2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_WRITE_BYTE, byte_value });
+            _ds2482Device.I2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_WRITE_BYTE, byte_value });
 
             ReadStatus();
         }
@@ -416,7 +492,7 @@ namespace Rinsen.IoT.OneWire
                 byte_value |= 1 << 7;
             }
 
-            _i2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_SINGLE_BIT, byte_value });
+            _ds2482Device.I2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_SINGLE_BIT, byte_value });
 
 
             ReadStatus();
@@ -437,7 +513,7 @@ namespace Rinsen.IoT.OneWire
 
             byte_value |= 1 << 7;
 
-            _i2cDevice.Write(new[] { FunctionCommand.ONEWIRE_SINGLE_BIT, byte_value });
+            _ds2482Device.I2cDevice.Write(new[] { FunctionCommand.ONEWIRE_SINGLE_BIT, byte_value });
 
             var status = ReadStatus();
 
@@ -451,9 +527,9 @@ namespace Rinsen.IoT.OneWire
         public byte OneWireReadByte()
         {
             var buffer = new byte[1];
-            _i2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_READ_BYTE });
+            _ds2482Device.I2cDevice.Write(new byte[] { FunctionCommand.ONEWIRE_READ_BYTE });
             ReadStatus();
-            _i2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.READ_DATA }, buffer);
+            _ds2482Device.I2cDevice.WriteRead(new byte[] { FunctionCommand.SET_READ_POINTER, RegisterSelection.READ_DATA }, buffer);
             return buffer[0];
         }
 
@@ -465,7 +541,7 @@ namespace Rinsen.IoT.OneWire
             configuration |= 1 << 5;
             configuration |= 1 << 4;
 
-            _i2cDevice.Write(new byte[] { FunctionCommand.WRITE_CONFIGURATION, configuration });
+            _ds2482Device.I2cDevice.Write(new byte[] { FunctionCommand.WRITE_CONFIGURATION, configuration });
         }
 
         static byte[] dscrc_table = (new[] {
@@ -572,6 +648,18 @@ namespace Rinsen.IoT.OneWire
             public const byte Channel_IO4 = 0xB4;
             public const byte Channel_IO5 = 0xA5;
             public const byte Channel_IO6 = 0x96;
+            public const byte Channel_IO7 = 0x87;
+        }
+
+        public class ChannelSelectVerification
+        {
+            public const byte Channel_IO0 = 0xB8;
+            public const byte Channel_IO1 = 0xB1;
+            public const byte Channel_IO2 = 0xAA;
+            public const byte Channel_IO3 = 0xA3;
+            public const byte Channel_IO4 = 0x9C;
+            public const byte Channel_IO5 = 0x95;
+            public const byte Channel_IO6 = 0x8E;
             public const byte Channel_IO7 = 0x87;
         }
 

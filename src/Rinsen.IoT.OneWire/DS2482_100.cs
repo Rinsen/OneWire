@@ -18,11 +18,17 @@ namespace Rinsen.IoT.OneWire
             :base(i2cDevice)
             
         {
-            Channels.Add(new DS2482Channel(i2cDevice, OneWireChannel.Channel_IO0));
+            Channels.Add(new DS2482Channel(this, OneWireChannel.Channel_IO0));
         }
         
-        public override void EnsureCorrectChannel(OneWireChannel channel)
+        public override bool IsCorrectChannelSelected(OneWireChannel channel)
         {
+            return true;
+        }
+
+        public override void SetSelectedChannel(OneWireChannel channel)
+        {
+            
         }
     }
 }
