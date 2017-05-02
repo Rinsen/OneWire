@@ -18,7 +18,7 @@ namespace Rinsen.IoT.OneWire
         private readonly OneWireChannel _channel;
 
         // global search state
-        public byte[] ROM_NO { get; set; }
+        public byte[] ROM_NO { get; private set; } = new byte[8];
         protected int _lastDiscrepancy;
         protected int _lastFamilyDiscrepancy;
         protected bool _lastDeviceFlag;
@@ -324,7 +324,7 @@ namespace Rinsen.IoT.OneWire
             // TMEX API TEST BUILD
             //return (TMTouchReset(session_handle) == 1);
 
-            if(!_ds2482Device.IsCorrectChannelSelected(_channel));
+            if(!_ds2482Device.IsCorrectChannelSelected(_channel))
             {
                 SelectDS2482Channel();
             }

@@ -6,10 +6,10 @@ namespace Rinsen.IoT.OneWire
 {
     public class OneWireDeviceHandler : IDisposable
     {
-        private readonly List<DS2482> _ds2482Devices;
-        private readonly List<IOneWireDevice> _oneWireDevices;
-        private readonly Dictionary<byte, Type> _oneWireDeviceTypes;
-        private readonly I2cDeviceLocator _i2cDeviceLocator;
+        private readonly List<DS2482> _ds2482Devices = new List<DS2482>();
+        private readonly List<IOneWireDevice> _oneWireDevices = new List<IOneWireDevice>();
+        private readonly Dictionary<byte, Type> _oneWireDeviceTypes = new Dictionary<byte, Type>();
+        private readonly I2cDeviceLocator _i2cDeviceLocator = new I2cDeviceLocator();
 
 
 
@@ -21,11 +21,6 @@ namespace Rinsen.IoT.OneWire
         {
             if (!connectedDS2482.DS2482_100Devices.Any() && !connectedDS2482.DS2482_800Devices.Any())
                 throw new ArgumentException("No DS2482 device address provided", nameof(connectedDS2482));
-
-            _oneWireDeviceTypes = new Dictionary<byte, Type>();
-            _oneWireDevices = new List<IOneWireDevice>();
-            _ds2482Devices = new List<DS2482>();
-            _i2cDeviceLocator = new I2cDeviceLocator();
 
             AddDeviceType<DS18S20>(0x10);
             AddDeviceType<DS18B20>(0x28);

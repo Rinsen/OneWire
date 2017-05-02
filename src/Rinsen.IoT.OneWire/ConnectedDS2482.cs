@@ -8,9 +8,8 @@ namespace Rinsen.IoT.OneWire
 {
     public class ConnectedDS2482
     {
-        
-        public List<byte> DS2482_100Devices { get; set; }
-        public List<byte> DS2482_800Devices { get; set; }
 
+        public List<byte> DS2482_100Devices { get; set; } = new List<byte>();
+        public List<byte> DS2482_800Devices { get; set; } = new List<byte>();
     }
 }

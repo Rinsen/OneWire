@@ -8,7 +8,7 @@ namespace Rinsen.IoT.OneWire
 {
     public abstract class DS2482 : IDisposable
     {
-        protected IList<DS2482Channel> Channels;
+        protected IList<DS2482Channel> Channels = new List<DS2482Channel>();
         public I2cDevice I2cDevice { get; }
         public DS2482(I2cDevice i2cDevice)
         {
