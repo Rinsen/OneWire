@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Devices.I2c;
 
 namespace Rinsen.IoT.OneWire
 {
@@ -9,28 +10,16 @@ namespace Rinsen.IoT.OneWire
         private readonly List<DS2482> _ds2482Devices = new List<DS2482>();
         private readonly List<IOneWireDevice> _oneWireDevices = new List<IOneWireDevice>();
         private readonly Dictionary<byte, Type> _oneWireDeviceTypes = new Dictionary<byte, Type>();
-        private readonly I2cDeviceLocator _i2cDeviceLocator = new I2cDeviceLocator();
-
-
+        private readonly DS2482DeviceLocator _dS2482DeviceLocator = new DS2482DeviceLocator();
 
         /// <summary>
-        /// One wire device handler via DS2482 based one wire bridge
+        /// One wire device handler without any connected DS2482 devices.<para />
+        /// Connect devices with AddDS2482_100 or AddDS2482_800
         /// </summary>
-        /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482 based device is detected</exception>
-        public OneWireDeviceHandler(ConnectedDS2482 connectedDS2482)
+        public OneWireDeviceHandler()
         {
-            if (!connectedDS2482.DS2482_100Devices.Any() && !connectedDS2482.DS2482_800Devices.Any())
-                throw new ArgumentException("No DS2482 device address provided", nameof(connectedDS2482));
-
             AddDeviceType<DS18S20>(0x10);
             AddDeviceType<DS18B20>(0x28);
-
-            FindConnectedDs2482Devices(connectedDS2482);
-
-            if (!_ds2482Devices.Any())
-            {
-                throw new DS2482DeviceNotFoundException("No DS2482 device detected, check that that the physical connection to the DS2482 one wire bridge is correct.");
-            }
         }
 
         /// <summary>
@@ -40,8 +29,10 @@ namespace Rinsen.IoT.OneWire
         /// <param name="ad1">AD1 addess bit</param>
         /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482 device is detected</exception>
         public OneWireDeviceHandler(bool ad0 = true, bool ad1 = true)
-            :this(CreateConnectedDS2482_100(ad0, ad1))
-        { }
+            :this()
+        {
+            _ds2482Devices.Add(_dS2482DeviceLocator.CreateDS2482_100(ad0, ad1));
+        }
 
         /// <summary>
         /// One wire device handler via one single DS2482-800
@@ -51,44 +42,41 @@ namespace Rinsen.IoT.OneWire
         /// <param name="ad2">AD2 addess bit</param>
         /// <exception cref="Rinsen.IoT.OneWire.DS2482DeviceNotFoundException">Thrown if no DS2482 device is detected</exception>
         public OneWireDeviceHandler(bool ad0, bool ad1, bool ad2)
-            : this(CreateConnectedDS2482_800(ad0, ad1, ad2))
-        { }
-
-        private void FindConnectedDs2482Devices(ConnectedDS2482 connectedDS2482)
+            : this()
         {
-            foreach (var candidateAddress in connectedDS2482.DS2482_100Devices)
-            {
-                var i2cDevice = _i2cDeviceLocator.GetI2cDevice(candidateAddress);
+            _ds2482Devices.Add(_dS2482DeviceLocator.CreateDS2482_800(ad0, ad1, ad2));
+        }
 
-                var ds2482_100 = new DS2482_100(i2cDevice);
+        public void AddDS2482_100(bool ad0 = true, bool ad1 = true)
+        {
+            var dS2482Device = _dS2482DeviceLocator.CreateDS2482_100(ad0, ad1);
 
-                try
-                {
-                    ds2482_100.OneWireReset();
+            _ds2482Devices.Add(dS2482Device);
+        }
 
-                    _ds2482Devices.Add(ds2482_100);
-                }
-                catch (Exception) // This could probably be done in a better way as it will hide the original exception...
-                {
-                }
-            }
+        public void AddDS2482_100(I2cDevice i2CDevice)
+        {
+            var dS2482Device = _dS2482DeviceLocator.CreateDS2482_100(i2CDevice);
 
-            foreach (var candidateAddress in connectedDS2482.DS2482_800Devices)
-            {
-                var i2cDevice = _i2cDeviceLocator.GetI2cDevice(candidateAddress);
+            dS2482Device.EnableExternalI2cDeviceLifetimeControl();
 
-                var ds2482_800 = new DS2482_800(i2cDevice);
+            _ds2482Devices.Add(dS2482Device);
+        }
 
-                try
-                {
-                    ds2482_800.OneWireReset();
+        public void AddDS2482_800(bool ad0, bool ad1, bool ad2)
+        {
+            var dS2482Device = _dS2482DeviceLocator.CreateDS2482_800(ad0, ad1, ad2);
 
-                    _ds2482Devices.Add(ds2482_800);
-                }
-                catch (Exception) // This could probably be done in a better way as it will hide the original exception...
-                {
-                }
-            }
+            _ds2482Devices.Add(dS2482Device);
+        }
+
+        public void AddDS2482_800(I2cDevice i2CDevice)
+        {
+            var dS2482Device = _dS2482DeviceLocator.CreateDS2482_800(i2CDevice);
+
+            dS2482Device.EnableExternalI2cDeviceLifetimeControl();
+            
+            _ds2482Devices.Add(dS2482Device);
         }
 
         public void AddDeviceType<T>(byte familyCode) where T : IOneWireDevice
@@ -125,46 +113,6 @@ namespace Rinsen.IoT.OneWire
                         ds2482Device.Dispose();
                 }
             }
-        }
-
-        private static ConnectedDS2482 CreateConnectedDS2482_100(bool ad0, bool ad1)
-        {
-            byte address = 0x18;
-            if (ad0)
-            {
-                address |= 1 << 0;
-            }
-            if (ad1)
-            {
-                address |= 1 << 1;
-            }
-
-            var connected = new ConnectedDS2482();
-            connected.DS2482_100Devices.Add(address);
-
-            return connected;
-        }
-
-        private static ConnectedDS2482 CreateConnectedDS2482_800(bool ad0, bool ad1, bool ad2)
-        {
-            byte address = 0x18;
-            if (ad0)
-            {
-                address |= 1 << 0;
-            }
-            if (ad1)
-            {
-                address |= 1 << 1;
-            }
-            if (ad1)
-            {
-                address |= 1 << 2;
-            }
-
-            var connected = new ConnectedDS2482();
-            connected.DS2482_800Devices.Add(address);
-
-            return connected;
         }
     }
 }

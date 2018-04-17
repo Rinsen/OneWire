@@ -113,12 +113,14 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectedDS2482.cs" />
     <Compile Include="DS18B20 .cs" />
     <Compile Include="DS18S20.cs" />
     <Compile Include="DS2482.cs" />
+    <Compile Include="DS2482800DeviceNotFoundException.cs" />
+    <Compile Include="DS2482100DeviceNotFoundException.cs" />
     <Compile Include="DS2482Channel.cs" />
     <Compile Include="DS2482DeviceNotFoundException.cs" />
+    <Compile Include="DS2482Locator.cs" />
     <Compile Include="DS2482_800.cs" />
     <Compile Include="DS2482_100.cs" />
     <Compile Include="ExtensionMethods.cs" />

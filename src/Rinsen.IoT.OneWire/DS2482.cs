@@ -9,7 +9,10 @@ namespace Rinsen.IoT.OneWire
     public abstract class DS2482 : IDisposable
     {
         protected IList<DS2482Channel> Channels = new List<DS2482Channel>();
+        private bool _externalI2cDeviceLifetime = false;
+
         public I2cDevice I2cDevice { get; }
+
         public DS2482(I2cDevice i2cDevice)
         {
             I2cDevice = i2cDevice;
@@ -36,6 +39,11 @@ namespace Rinsen.IoT.OneWire
             return Channels.First().OneWireReset();
         }
 
+        public void EnableExternalI2cDeviceLifetimeControl()
+        {
+            _externalI2cDeviceLifetime = true;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -46,7 +54,7 @@ namespace Rinsen.IoT.OneWire
         {
             if (disposing)
             {
-                if (I2cDevice != null)
+                if (I2cDevice != null && !_externalI2cDeviceLifetime)
                     I2cDevice.Dispose();
             }
         }
