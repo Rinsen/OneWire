@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Rinsen.IoT.OneWire
+﻿namespace Rinsen.IoT.OneWire
 {
     public static class ExtensionMethods
     {

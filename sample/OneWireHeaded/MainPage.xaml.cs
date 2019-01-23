@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -23,11 +24,12 @@ namespace OneWireHeaded
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private readonly OneWireDeviceHandler _oneWireDeviceHandler;
+        private readonly IDS2482DeviceFactory _dS2482DeviceFactory = new DS2482DeviceFactory();
+        private readonly DS2482_100 _ds2482_100;
 
         public MainPage()
         {
-            _oneWireDeviceHandler = new OneWireDeviceHandler(true, true);
+            _ds2482_100 = _dS2482DeviceFactory.CreateDS2482_100(true, true).Result;
             this.InitializeComponent();
         }
 
@@ -35,7 +37,7 @@ namespace OneWireHeaded
         {
             try
             {
-                foreach (var device in _oneWireDeviceHandler.GetDevices<DS18B20>())
+                foreach (var device in _ds2482_100.GetDevices<DS18B20>())
                 {
                     var result = device.GetTemperature();
                     this.textBox.Text = result.ToString();

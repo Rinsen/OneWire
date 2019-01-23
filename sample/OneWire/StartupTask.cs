@@ -3,6 +3,7 @@ using Windows.ApplicationModel.Background;
 using Windows.System.Threading;
 using Rinsen.IoT.OneWire;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
 
@@ -12,6 +13,7 @@ namespace OneWire
     {
         ThreadPoolTimer _timer;
         BackgroundTaskDeferral _deferral;
+        private readonly IDS2482DeviceFactory _dS2482DeviceFactory = new DS2482DeviceFactory(); // This could be injected if using Generic Host for example
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -23,19 +25,16 @@ namespace OneWire
             _deferral = taskInstance.GetDeferral();
 
             // Initial log
-            LogTemperatures(null);
-
-            // Then log every 5 minutes
-            _timer = ThreadPoolTimer.CreatePeriodicTimer(LogTemperatures, TimeSpan.FromMinutes(5));
+            Task.Run(LogTemperatures);
         }
 
-        void LogTemperatures(ThreadPoolTimer timer)
+        private async Task LogTemperatures()
         {
             try
             {
-                using (var oneWireDeviceHandler = new OneWireDeviceHandler(true, true))
+                using (var dS2482_100 = await _dS2482DeviceFactory.CreateDS2482_100(true, true))
                 {
-                    foreach (var device in oneWireDeviceHandler.GetDevices<DS18S20>())
+                    foreach (var device in dS2482_100.GetDevices<DS18S20>())
                     {
                         var result = device.GetTemperature();
                         var extendedResult = device.GetExtendedTemperature();
@@ -43,7 +42,7 @@ namespace OneWire
                         // Insert code to log result in some way
                     }
 
-                    foreach (var device in oneWireDeviceHandler.GetDevices<DS18B20>())
+                    foreach (var device in dS2482_100.GetDevices<DS18B20>())
                     {
                         var result = device.GetTemperature();
                         Debug.WriteLine(result);

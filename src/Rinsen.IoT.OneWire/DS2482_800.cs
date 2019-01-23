@@ -13,8 +13,8 @@ namespace Rinsen.IoT.OneWire
     {
         private OneWireChannel _selectedChannel;
 
-        public DS2482_800(I2cDevice i2cDevice)
-            :base(i2cDevice)
+        public DS2482_800(I2cDevice i2cDevice, bool disposeI2cDevice)
+            :base(i2cDevice, disposeI2cDevice)
         {
             _selectedChannel = OneWireChannel.Channel_IO0;
             Channels.Add(new DS2482Channel(this, OneWireChannel.Channel_IO0));
