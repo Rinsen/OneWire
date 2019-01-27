@@ -11,7 +11,6 @@ namespace OneWire
 {
     public sealed class StartupTask : IBackgroundTask
     {
-        ThreadPoolTimer _timer;
         BackgroundTaskDeferral _deferral;
         private readonly IDS2482DeviceFactory _dS2482DeviceFactory = new DS2482DeviceFactory(); // This could be injected if using Generic Host for example
 
@@ -30,30 +29,46 @@ namespace OneWire
 
         private async Task LogTemperatures()
         {
-            try
+            using (var dS2482_800 = await _dS2482DeviceFactory.CreateDS2482_800(false, false, false))
+            //using (var dS2482_100 = await _dS2482DeviceFactory.CreateDS2482_100(true, true))
             {
-                using (var dS2482_100 = await _dS2482DeviceFactory.CreateDS2482_100(true, true))
+                while (true)
                 {
-                    foreach (var device in dS2482_100.GetDevices<DS18S20>())
+                    foreach (var device in dS2482_800.GetDevices<DS18S20>())
                     {
                         var result = device.GetTemperature();
                         var extendedResult = device.GetExtendedTemperature();
-
+                        Debug.WriteLine(result);
                         // Insert code to log result in some way
                     }
 
-                    foreach (var device in dS2482_100.GetDevices<DS18B20>())
+                    foreach (var device in dS2482_800.GetDevices<DS18B20>())
                     {
                         var result = device.GetTemperature();
                         Debug.WriteLine(result);
 
                         // Insert code to log result in some way
                     }
+
+                    //foreach (var device in dS2482_100.GetDevices<DS18S20>())
+                    //{
+                    //    var result = device.GetTemperature();
+                    //    var extendedResult = device.GetExtendedTemperature();
+                    //    Debug.WriteLine(result);
+
+                    //    // Insert code to log result in some way
+                    //}
+
+                    //foreach (var device in dS2482_100.GetDevices<DS18B20>())
+                    //{
+                    //    var result = device.GetTemperature();
+                    //    Debug.WriteLine(result);
+
+                    //    // Insert code to log result in some way
+                    //}
+
+                    await Task.Delay(5000);
                 }
-            }
-            catch (Exception e)
-            {
-                // Insert code to log all exceptions!
             }
         }
     }

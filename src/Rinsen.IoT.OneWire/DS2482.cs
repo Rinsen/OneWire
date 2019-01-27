@@ -49,6 +49,8 @@ namespace Rinsen.IoT.OneWire
                 {
                     _oneWireDevices.AddRange(channel.GetConnectedOneWireDevices(_oneWireDeviceTypes));
                 }
+
+                _initialized = true;
             }
         }
 
