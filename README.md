@@ -60,7 +60,7 @@ And thats all you need to get started with measuring temperatures with a DS18B20
 
 Headed apps
 -----------
-Headed apps do not currently support disposing the OneWireDeviceHandler. The instance MUST be reused between measurements.
+Headed apps do not currently support disposing the DS2482 devices. The instance MUST be reused between measurements.
 
 I2C Address
 -----------
