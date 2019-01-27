@@ -43,47 +43,47 @@ namespace Rinsen.IoT.OneWire
             
             if (lsb.GetBit(0))
             {
-                temp_read += Math.Pow(2, -4);
+                temp_read += 0.0625; // Math.Pow(2, -4);
             }
             if (lsb.GetBit(1))
             {
-                temp_read += Math.Pow(2, -3);
+                temp_read += 0.125; // Math.Pow(2, -3);
             }
             if (lsb.GetBit(2))
             {
-                temp_read += Math.Pow(2, -2);
+                temp_read += 0.25; // Math.Pow(2, -2);
             }
             if (lsb.GetBit(3))
             {
-                temp_read += Math.Pow(2, -1);
+                temp_read += 0.5; // Math.Pow(2, -1);
             }
             if (lsb.GetBit(4))
             {
-                temp_read += Math.Pow(2, 0);
+                temp_read += 1; // Math.Pow(2, 0);
             }
             if (lsb.GetBit(5))
             {
-                temp_read += Math.Pow(2, 1);
+                temp_read += 2; // Math.Pow(2, 1);
             }
             if (lsb.GetBit(6))
             {
-                temp_read += Math.Pow(2, 2);
+                temp_read += 4; // Math.Pow(2, 2);
             }
             if (lsb.GetBit(7))
             {
-                temp_read += Math.Pow(2, 3);
+                temp_read += 8; // Math.Pow(2, 3);
             }
             if (msb.GetBit(0))
             {
-                temp_read += Math.Pow(2, 4);
+                temp_read += 16; // Math.Pow(2, 4);
             }
             if (msb.GetBit(1))
             {
-                temp_read += Math.Pow(2, 5);
+                temp_read += 32; //Math.Pow(2, 5);
             }
             if (msb.GetBit(2))
             {
-                temp_read += Math.Pow(2, 6);
+                temp_read += 64; // Math.Pow(2, 6);
             }
 
             if (negative)

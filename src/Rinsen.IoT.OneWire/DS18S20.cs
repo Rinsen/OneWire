@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Rinsen.IoT.OneWire
+﻿namespace Rinsen.IoT.OneWire
 {
     public class DS18S20 : DS18B20
     {
@@ -16,8 +14,8 @@ namespace Rinsen.IoT.OneWire
         internal override double GetTemp_Read(byte msb, byte lsb)
         {
             double temp_read;
-            var rawTemperature = lsb;//scratchpad[Scratchpad.TemperatureLSB];
-            var negativeSign = msb > 0;// scratchpad[Scratchpad.TemperatureMSB] > 0;
+            var rawTemperature = lsb;
+            var negativeSign = msb > 0;
             var decimalPart = rawTemperature.GetBit(0);
             var temperature = (int)rawTemperature;
             temperature &= ~(1 << 0);
