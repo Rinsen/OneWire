@@ -2,18 +2,18 @@
 <package >
   <metadata>
     <id>Rinsen.OneWire</id>
-    <version>0.1.5</version>
+    <version>0.2.0</version>
     <title>Rinsen One Wire</title>
     <authors>Fredrik Rinsén</authors>
     <owners>Fredrik Rinsén</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/Rinsen/OneWire</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>One Wire library for Windows IoT on Raspberry Pi via DS2482-100 I2C to One Wire bridge</description>
+    <description>One Wire library for Windows IoT on Raspberry Pi via DS2482-100 and DS2482-800 I2C to One Wire bridge</description>
     <releaseNotes>
       * Headed Universal Applications is now supported, check sample for details.
     </releaseNotes>
-    <copyright>Copyright 2015</copyright>
+    <copyright>Copyright 2019</copyright>
     <tags>OneWire Raspberry IoT</tags>
   </metadata>
   <files>

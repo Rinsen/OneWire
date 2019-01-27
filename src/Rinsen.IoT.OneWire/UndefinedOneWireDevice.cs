@@ -1,13 +1,24 @@
-﻿namespace Rinsen.IoT.OneWire
+﻿using System;
+
+namespace Rinsen.IoT.OneWire
 {
-    class UndefinedOneWireDevice : IOneWireDevice
+    public class UndefinedOneWireDevice : IOneWireDevice
     {
-        public DS2482_100 DS2482_100 { get; set; }
-
-        public byte[] OneWireAddress { get; set; }
-
-        public void Initialize()
+        public UndefinedOneWireDevice(DS2482Channel ds2482Channel, byte[] oneWireAddress)
         {
+            DS2482Channel = ds2482Channel;
+            OneWireAddress = oneWireAddress;
+        }
+
+        public DS2482Channel DS2482Channel { get; }
+
+        public byte[] OneWireAddress { get; }
+
+        public string OneWireAddressString { get { return BitConverter.ToString(OneWireAddress); } }
+
+        public void Initialize(DS2482Channel ds2482, byte[] oneWireAddress)
+        {
+            throw new NotImplementedException();
         }
     }
 }

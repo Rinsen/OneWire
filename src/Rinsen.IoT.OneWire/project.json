@@ -1,5 +1,5 @@
 ﻿{
-  "version": "0.1.5",
+  "version": "0.1.6",
   "authors": [
     "Fredrik Rinsén"
   ],
@@ -17,10 +17,10 @@
     "IoT"
   ],
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "6.1.9"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0.10240": {}
   },
   "runtimes": {
     "win10-arm": {},

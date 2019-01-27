@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D02A30C-7A65-4CC2-9FE5-68CD6F931569}"
 EndProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{9FFD69
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DFD0D9B9-EB5E-4B4E-B250-FAF8B9FCC1C2}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
 		Rinsen.IoT.OneWire.nuspec = Rinsen.IoT.OneWire.nuspec
 	EndProjectSection
 EndProject
@@ -119,5 +121,8 @@ Global
 		{48B789B0-E612-4E01-9C4C-3E46F34D8F7D} = {9FFD6943-10E1-4D97-9FB2-5298086EE9CA}
 		{5AB9E083-9E2D-4C6B-A41A-0EF142AF898F} = {E6DBB469-508C-4267-9054-0D1320A7CCAC}
 		{66BFF07F-5F3F-4400-B890-2B3F8C0BDB4D} = {9FFD6943-10E1-4D97-9FB2-5298086EE9CA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A067FBFB-F093-4EF4-80C2-C6DC3F0FD7A3}
 	EndGlobalSection
 EndGlobal

@@ -3,6 +3,7 @@ using Windows.ApplicationModel.Background;
 using Windows.System.Threading;
 using Rinsen.IoT.OneWire;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
 
@@ -10,8 +11,8 @@ namespace OneWire
 {
     public sealed class StartupTask : IBackgroundTask
     {
-        ThreadPoolTimer _timer;
         BackgroundTaskDeferral _deferral;
+        private readonly IDS2482DeviceFactory _dS2482DeviceFactory = new DS2482DeviceFactory(); // This could be injected if using Generic Host for example
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -23,38 +24,51 @@ namespace OneWire
             _deferral = taskInstance.GetDeferral();
 
             // Initial log
-            LogTemperatures(null);
-
-            // Then log every 5 minutes
-            _timer = ThreadPoolTimer.CreatePeriodicTimer(LogTemperatures, TimeSpan.FromMinutes(5));
+            Task.Run(LogTemperatures);
         }
 
-        void LogTemperatures(ThreadPoolTimer timer)
+        private async Task LogTemperatures()
         {
-            try
+            using (var ds2482_800 = await _dS2482DeviceFactory.CreateDS2482_800(false, false, false))
+            using (var ds2482_100 = await _dS2482DeviceFactory.CreateDS2482_100(true, true))
             {
-                using (var oneWireDeviceHandler = new OneWireDeviceHandler())
+                while (true)
                 {
-                    foreach (var device in oneWireDeviceHandler.GetDevices<DS18S20>())
+                    foreach (var device in ds2482_800.GetDevices<DS18S20>())
                     {
                         var result = device.GetTemperature();
                         var extendedResult = device.GetExtendedTemperature();
-
+                        Debug.WriteLine($"DS2482-800, DS18S20 result {result}");
                         // Insert code to log result in some way
                     }
 
-                    foreach (var device in oneWireDeviceHandler.OneWireDevices.GetDevices<DS18B20>())
+                    foreach (var device in ds2482_800.GetDevices<DS18B20>())
                     {
                         var result = device.GetTemperature();
-                        Debug.WriteLine(result);
+                        Debug.WriteLine($"DS2482-800, DS18B20 result {result}");
 
                         // Insert code to log result in some way
                     }
+
+                    foreach (var device in ds2482_100.GetDevices<DS18S20>())
+                    {
+                        var result = device.GetTemperature();
+                        var extendedResult = device.GetExtendedTemperature();
+                        Debug.WriteLine($"DS2482_100, DS18S20 result {result}");
+
+                        // Insert code to log result in some way
+                    }
+
+                    foreach (var device in ds2482_100.GetDevices<DS18B20>())
+                    {
+                        var result = device.GetTemperature();
+                        Debug.WriteLine($"DS2482-100, DS18B20 result {result}");
+
+                        // Insert code to log result in some way
+                    }
+
+                    await Task.Delay(5000);
                 }
-            }
-            catch (Exception e)
-            {
-                // Insert code to log all exceptions!
             }
         }
     }

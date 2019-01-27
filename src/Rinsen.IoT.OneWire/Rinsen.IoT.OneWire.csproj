@@ -115,12 +115,18 @@
   <ItemGroup>
     <Compile Include="DS18B20 .cs" />
     <Compile Include="DS18S20.cs" />
+    <Compile Include="DS2482.cs" />
+    <Compile Include="DS2482800DeviceNotFoundException.cs" />
     <Compile Include="DS2482100DeviceNotFoundException.cs" />
+    <Compile Include="DS2482Channel.cs" />
+    <Compile Include="DS2482DeviceNotFoundException.cs" />
+    <Compile Include="DS2482DeviceFactory.cs" />
+    <Compile Include="DS2482_800.cs" />
     <Compile Include="DS2482_100.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="I2cDeviceLocator.cs" />
+    <Compile Include="I2cDeviceFactory.cs" />
+    <Compile Include="IDS2482DeviceFactory.cs" />
     <Compile Include="IOneWireDevice.cs" />
-    <Compile Include="OneWireDeviceHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UndefinedOneWireDevice.cs" />
     <Content Include="Properties\Rinsen.IoT.OneWire.rd.xml" />

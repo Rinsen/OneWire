@@ -5,14 +5,16 @@ namespace Rinsen.IoT.OneWire
 {
     public class DS18B20 : IOneWireDevice
     {
-        public DS2482_100 DS2482_100 { get; set; }
+        public DS2482Channel DS2482Channel { get; private set; }
 
-        public byte[] OneWireAddress { get; set; }
+        public byte[] OneWireAddress { get; private set; }
 
         public string OneWireAddressString { get { return BitConverter.ToString(OneWireAddress); } }
         
-        public void Initialize()
+        public void Initialize(DS2482Channel ds2482Channel, byte[] oneWireAddress)
         {
+            DS2482Channel = ds2482Channel;
+            OneWireAddress = oneWireAddress;
         }
 
         public double GetTemperature()
@@ -41,47 +43,47 @@ namespace Rinsen.IoT.OneWire
             
             if (lsb.GetBit(0))
             {
-                temp_read += Math.Pow(2, -4);
+                temp_read += 0.0625; // Math.Pow(2, -4);
             }
             if (lsb.GetBit(1))
             {
-                temp_read += Math.Pow(2, -3);
+                temp_read += 0.125; // Math.Pow(2, -3);
             }
             if (lsb.GetBit(2))
             {
-                temp_read += Math.Pow(2, -2);
+                temp_read += 0.25; // Math.Pow(2, -2);
             }
             if (lsb.GetBit(3))
             {
-                temp_read += Math.Pow(2, -1);
+                temp_read += 0.5; // Math.Pow(2, -1);
             }
             if (lsb.GetBit(4))
             {
-                temp_read += Math.Pow(2, 0);
+                temp_read += 1; // Math.Pow(2, 0);
             }
             if (lsb.GetBit(5))
             {
-                temp_read += Math.Pow(2, 1);
+                temp_read += 2; // Math.Pow(2, 1);
             }
             if (lsb.GetBit(6))
             {
-                temp_read += Math.Pow(2, 2);
+                temp_read += 4; // Math.Pow(2, 2);
             }
             if (lsb.GetBit(7))
             {
-                temp_read += Math.Pow(2, 3);
+                temp_read += 8; // Math.Pow(2, 3);
             }
             if (msb.GetBit(0))
             {
-                temp_read += Math.Pow(2, 4);
+                temp_read += 16; // Math.Pow(2, 4);
             }
             if (msb.GetBit(1))
             {
-                temp_read += Math.Pow(2, 5);
+                temp_read += 32; //Math.Pow(2, 5);
             }
             if (msb.GetBit(2))
             {
-                temp_read += Math.Pow(2, 6);
+                temp_read += 64; // Math.Pow(2, 6);
             }
 
             if (negative)
@@ -95,7 +97,7 @@ namespace Rinsen.IoT.OneWire
         protected byte[] GetTemperatureScratchpad()
         {
             ResetOneWireAndMatchDeviceRomAddress();
-            DS2482_100.EnableStrongPullup();
+            DS2482Channel.EnableStrongPullup();
             StartTemperatureConversion();
 
             ResetOneWireAndMatchDeviceRomAddress();
@@ -106,20 +108,20 @@ namespace Rinsen.IoT.OneWire
 
         void StartTemperatureConversion()
         {
-            DS2482_100.OneWireWriteByte(FunctionCommand.CONVERT_T);
+            DS2482Channel.OneWireWriteByte(FunctionCommand.CONVERT_T);
 
             Task.Delay(TimeSpan.FromSeconds(1)).Wait();
         }
 
         byte[] ReadScratchpad()
         {
-            DS2482_100.OneWireWriteByte(FunctionCommand.READ_SCRATCHPAD);
+            DS2482Channel.OneWireWriteByte(FunctionCommand.READ_SCRATCHPAD);
 
             var scratchpadData = new byte[9];
 
             for (int i = 0; i < scratchpadData.Length; i++)
             {
-                scratchpadData[i] = DS2482_100.OneWireReadByte();
+                scratchpadData[i] = DS2482Channel.OneWireReadByte();
             }
 
             return scratchpadData;
@@ -127,13 +129,13 @@ namespace Rinsen.IoT.OneWire
 
         void ResetOneWireAndMatchDeviceRomAddress()
         {
-            DS2482_100.OneWireReset();
+            DS2482Channel.OneWireReset();
 
-            DS2482_100.OneWireWriteByte(RomCommand.MATCH);
+            DS2482Channel.OneWireWriteByte(RomCommand.MATCH);
 
             foreach (var item in OneWireAddress)
             {
-                DS2482_100.OneWireWriteByte(item);
+                DS2482Channel.OneWireWriteByte(item);
             }
         }
 
