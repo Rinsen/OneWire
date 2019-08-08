@@ -29,8 +29,8 @@ namespace OneWire
 
         private async Task LogTemperatures()
         {
-            using (var ds2482_800 = await _dS2482DeviceFactory.CreateDS2482_800(false, false, false))
-            using (var ds2482_100 = await _dS2482DeviceFactory.CreateDS2482_100(true, true))
+            using (var ds2482_800 = _dS2482DeviceFactory.CreateDS2482_800(false, false, false))
+            using (var ds2482_100 = _dS2482DeviceFactory.CreateDS2482_100(true, true))
             {
                 while (true)
                 {

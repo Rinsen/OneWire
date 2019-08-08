@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Device.I2c;
 using System.Threading.Tasks;
-using Windows.Devices.I2c;
 
 namespace Rinsen.IoT.OneWire
 {
@@ -8,7 +8,7 @@ namespace Rinsen.IoT.OneWire
     {
         private readonly I2cDeviceFactory _i2cDeviceLocator = new I2cDeviceFactory();
 
-        public async Task<DS2482_100> CreateDS2482_100(bool ad0, bool ad1)
+        public DS2482_100 CreateDS2482_100(bool ad0, bool ad1)
         {
             byte address = 0x18;
             if (ad0)
@@ -20,7 +20,7 @@ namespace Rinsen.IoT.OneWire
                 address |= 1 << 1;
             }
 
-            var i2cDevice = await _i2cDeviceLocator.GetI2cDeviceAsync(address);
+            var i2cDevice = _i2cDeviceLocator.GetI2cDevice(address);
 
             return PrivateCreateDs2482_100(i2cDevice, true);
         }
@@ -46,7 +46,7 @@ namespace Rinsen.IoT.OneWire
             return ds2482_100;
         }
 
-        public async Task<DS2482_800> CreateDS2482_800(bool ad0, bool ad1, bool ad2)
+        public DS2482_800 CreateDS2482_800(bool ad0, bool ad1, bool ad2)
         {
             byte address = 0x18;
             if (ad0)
@@ -62,7 +62,7 @@ namespace Rinsen.IoT.OneWire
                 address |= 1 << 2;
             }
 
-            var i2cDevice = await _i2cDeviceLocator.GetI2cDeviceAsync(address);
+            var i2cDevice = _i2cDeviceLocator.GetI2cDevice(address);
 
             return PrivateCreateDS2482_800(i2cDevice, true);
         }
