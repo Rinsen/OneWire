@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Windows.Devices.I2c;
+﻿using System.Device.I2c;
 using static Rinsen.IoT.OneWire.DS2482Channel;
 
 namespace Rinsen.IoT.OneWire

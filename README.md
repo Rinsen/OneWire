@@ -2,7 +2,15 @@ One Wire in .NET C# for Raspberry Pi
 =========================
 via DS2482-100 or DS2482-800 for Windows IoT on Raspberry Pi
 
-A new version 2.0 is now released.
+A new Beta version is released called 3.0-beta.
+
+The single key feature in this release is a move away from UWP that is starting to feel quite dead now and to Net Standard instead. 
+This should in theory give this project the possibility to also leave Windows IoT Core that feels quite dead now days also and instead run on .NET Core in Linux on the Raspberry PI while still supporting Windows IoT Core also. 
+But I have not tested this possibility in any way.
+
+This is made possible by the awesome work done by the ".NET Core IoT Libraries" project https://github.com/dotnet/iot/
+
+The previous 2.0 release introduced all of these changes.
 
 The key features of this release is
 - Support for DS2482-800 chip
