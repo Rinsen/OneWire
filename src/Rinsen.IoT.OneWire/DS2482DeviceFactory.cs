@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Device.I2c;
-using System.Threading.Tasks;
 
 namespace Rinsen.IoT.OneWire
 {
     public class DS2482DeviceFactory : IDS2482DeviceFactory
     {
-        private readonly I2cDeviceFactory _i2cDeviceLocator = new I2cDeviceFactory();
-
         public DS2482_100 CreateDS2482_100(bool ad0, bool ad1)
         {
             byte address = 0x18;
@@ -20,7 +17,12 @@ namespace Rinsen.IoT.OneWire
                 address |= 1 << 1;
             }
 
-            var i2cDevice = _i2cDeviceLocator.GetI2cDevice(address);
+            return CreateDS2482_100(1, address);
+        }
+
+        public DS2482_100 CreateDS2482_100(int busId, int address)
+        {
+            var i2cDevice = GetI2cDevice(busId, address);
 
             return PrivateCreateDs2482_100(i2cDevice, true);
         }
@@ -62,7 +64,12 @@ namespace Rinsen.IoT.OneWire
                 address |= 1 << 2;
             }
 
-            var i2cDevice = _i2cDeviceLocator.GetI2cDevice(address);
+            return CreateDS2482_800(1, address);
+        }
+
+        public DS2482_800 CreateDS2482_800(int busId, int address)
+        { 
+            var i2cDevice = GetI2cDevice(busId, address);
 
             return PrivateCreateDS2482_800(i2cDevice, true);
         }
@@ -86,6 +93,13 @@ namespace Rinsen.IoT.OneWire
             }
 
             return ds2482_800;
+        }
+
+        private I2cDevice GetI2cDevice(int busId, int address)
+        {
+            var i2cConnectionSettings = new I2cConnectionSettings(busId, address);
+
+            return I2cDevice.Create(i2cConnectionSettings);
         }
     }
 }

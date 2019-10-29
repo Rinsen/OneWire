@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Rinsen.OneWire</id>
-    <version>0.3.0-beta</version>
+    <version>0.3.1-beta</version>
     <title>Rinsen One Wire</title>
     <authors>Fredrik Rinsén</authors>
     <owners>Fredrik Rinsén</owners>
@@ -17,7 +17,7 @@
     <tags>OneWire Raspberry IoT</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="System.Device.Gpio" version="0.1.0-prerelease.19376.1" />
+        <dependency id="System.Device.Gpio" version="1.0.0" />
       </group>
     </dependencies>
   </metadata>
