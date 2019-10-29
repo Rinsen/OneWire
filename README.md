@@ -4,11 +4,15 @@ via DS2482-100 or DS2482-800 for Windows IoT on Raspberry Pi
 
 A new Beta version is released called 3.0-beta.
 
-The single key feature in this release is a move away from UWP that is starting to feel quite dead now and to Net Standard instead. 
-This should in theory give this project the possibility to also leave Windows IoT Core that feels quite dead now days also and instead run on .NET Core in Linux on the Raspberry PI while still supporting Windows IoT Core also. 
-But I have not tested this possibility in any way.
+The single key feature in this release is a move from UWP that is starting to feel quite dead and on to Net Standard 2.0.
+
+This should in theory give this project the possibility to run on other platforms than Windows IoT Core that also feels quite dead together with UWP now and instead run on .NET Core on both Windows IoT Core and Linux on the Raspberry PI.
+
+I have not tested this possibility to run in Linux in any way.
 
 This is made possible by the awesome work done by the ".NET Core IoT Libraries" project https://github.com/dotnet/iot/
+
+Please file and issue if you find any problems!
 
 The previous 2.0 release introduced all of these changes.
 
