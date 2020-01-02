@@ -2,8 +2,17 @@
 
   
   <PropertyGroup>
-    <Version>0.3.1-beta</Version>
+    <PackageId>Rinsen.OneWire</PackageId>
+    <Version>0.3.2</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Title>Rinsen One Wire</Title>
+    <Authors>Fredrik Rinsén</Authors>
+    <Description>.Net Standard 2.0 One Wire library for Windows Iot Core and Linux on Raspberry Pi via DS2482-100 and DS2482-800 I2C to One Wire bridge</Description>
+    <Copyright>© Fredrik Rinsén</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>Rinsen OneWire Raspberry IoT</PackageTags>
+    <RepositoryUrl>https://github.com/Rinsen/OneWire</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
