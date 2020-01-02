@@ -84,11 +84,11 @@ If the address is wrong or the device is connected in a bad way there will be a 
 
 Built in One Wire Device Support
 ---------------------------------
-##Today:
+## Today:
 1. DS18B20
 2. DS18S20
 
-##Extend with your own device
+## Extend with your own device
 
     oneWireDeviceHandler.AddDeviceType<MyDeviceType>(OneWireFamilyCode);
 
