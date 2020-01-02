@@ -1,6 +1,6 @@
 One Wire in .NET C# for Raspberry Pi
 =========================
-via DS2482-100 or DS2482-800 for Windows IoT on Raspberry Pi
+via DS2482-100 or DS2482-800 for Windows IoT Core or Linux on Raspberry Pi
 
 A new version built on top of System.Device.Gpio enabling this project to target .NET Standard 2.0
 
