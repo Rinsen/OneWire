@@ -6,8 +6,6 @@ A new version built on top of System.Device.Gpio enabling this project to target
 
 This is made possible by the awesome work done by the ".NET Core IoT Libraries" project https://github.com/dotnet/iot/
 
-Please file issue if you find any problems!
-
 Introduction
 ------------
 
