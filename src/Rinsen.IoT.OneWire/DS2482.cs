@@ -63,7 +63,7 @@ namespace Rinsen.IoT.OneWire
 
         public bool OneWireReset()
         {
-            return Channels.First().OneWireReset();
+            return Channels.First().Reset();
         }
 
         public void Dispose()

@@ -1,19 +1,20 @@
-﻿using System;
+﻿using Rinsen.IoT.OneWire.Abstractions;
+using System;
 using System.Threading.Tasks;
 
 namespace Rinsen.IoT.OneWire
 {
     public class DS18B20 : IOneWireDevice
     {
-        public DS2482Channel DS2482Channel { get; private set; }
+        private OneWireMaster _oneWireMaster;
 
         public byte[] OneWireAddress { get; private set; }
 
         public string OneWireAddressString { get { return BitConverter.ToString(OneWireAddress); } }
-        
-        public void Initialize(DS2482Channel ds2482Channel, byte[] oneWireAddress)
+
+        public void Initialize(OneWireMaster oneWireMaster, byte[] oneWireAddress)
         {
-            DS2482Channel = ds2482Channel;
+            _oneWireMaster = oneWireMaster;
             OneWireAddress = oneWireAddress;
         }
 
@@ -97,7 +98,6 @@ namespace Rinsen.IoT.OneWire
         protected byte[] GetTemperatureScratchpad()
         {
             ResetOneWireAndMatchDeviceRomAddress();
-            DS2482Channel.EnableStrongPullup();
             StartTemperatureConversion();
 
             ResetOneWireAndMatchDeviceRomAddress();
@@ -108,20 +108,20 @@ namespace Rinsen.IoT.OneWire
 
         void StartTemperatureConversion()
         {
-            DS2482Channel.OneWireWriteByte(FunctionCommand.CONVERT_T);
+            _oneWireMaster.WriteByte(FunctionCommand.CONVERT_T);
 
             Task.Delay(TimeSpan.FromSeconds(1)).Wait();
         }
 
         byte[] ReadScratchpad()
         {
-            DS2482Channel.OneWireWriteByte(FunctionCommand.READ_SCRATCHPAD);
+            _oneWireMaster.WriteByte(FunctionCommand.READ_SCRATCHPAD);
 
             var scratchpadData = new byte[9];
 
             for (int i = 0; i < scratchpadData.Length; i++)
             {
-                scratchpadData[i] = DS2482Channel.OneWireReadByte();
+                scratchpadData[i] = _oneWireMaster.ReadByte();
             }
 
             return scratchpadData;
@@ -129,13 +129,13 @@ namespace Rinsen.IoT.OneWire
 
         void ResetOneWireAndMatchDeviceRomAddress()
         {
-            DS2482Channel.OneWireReset();
+            _oneWireMaster.Reset();
 
-            DS2482Channel.OneWireWriteByte(RomCommand.MATCH);
+            _oneWireMaster.WriteByte(RomCommand.MATCH);
 
             foreach (var item in OneWireAddress)
             {
-                DS2482Channel.OneWireWriteByte(item);
+                _oneWireMaster.WriteByte(item);
             }
         }
 
