@@ -1,25 +1,10 @@
 One Wire in .NET C# for Raspberry Pi
 =========================
-via DS2482-100 or DS2482-800 for Windows IoT on Raspberry Pi
+via DS2482-100 or DS2482-800 for Windows IoT Core or Linux on Raspberry Pi
 
-A new Beta version is released called 3.0-beta.
-
-The single key feature in this release is a move from UWP that is starting to feel quite dead and on to Net Standard 2.0.
-
-This should in theory give this project the possibility to run on other platforms than Windows IoT Core that also feels quite dead together with UWP now and instead run on .NET Core on both Windows IoT Core and Linux on the Raspberry PI.
-
-I have not tested this possibility to run in Linux in any way.
+A new version built on top of System.Device.Gpio enabling this project to target .NET Standard 2.0
 
 This is made possible by the awesome work done by the ".NET Core IoT Libraries" project https://github.com/dotnet/iot/
-
-Please file and issue if you find any problems!
-
-The previous 2.0 release introduced all of these changes.
-
-The key features of this release is
-- Support for DS2482-800 chip
-- a new DS2482DeviceFactory for creating DS2482 connections instead of the old OneWireDeviceHandler() that was hiding to much of what was going on.
-- some minor tweaks, bug fixes and performance enhancements
 
 Introduction
 ------------
