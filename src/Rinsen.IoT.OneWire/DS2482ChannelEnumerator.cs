@@ -50,7 +50,7 @@ namespace Rinsen.IoT.OneWire
             _lastDiscrepancy = 0;
             _lastDeviceFlag = false;
             _lastFamilyDiscrepancy = 0;
-            _first = true;
+            _first = false;
         }
 
         /// <summary>
